@@ -4,6 +4,7 @@ import Combine
 fileprivate var subscriptions = Set<AnyCancellable>()
 
 // 1)
+// - a
 example(of: "Notification Center") {
     let center = NotificationCenter.default
     let myNotification = Notification.Name("MyNotification")
@@ -18,6 +19,17 @@ example(of: "Notification Center") {
     
     center.post(name: myNotification, object: nil)
     subscription.cancel()
+}
+// - b
+
+example(of: "NotificationCenter.Publisher") {
+    let newName = Notification.Name("Combine")
+    let publisher = NotificationCenter.Publisher(center: .default, name: newName, object: nil)
+        .sink(receiveValue: { print($0)} )
+        .store(in: &subscriptions)
+    
+    NotificationCenter.default.post(name: newName, object: nil)
+//    NotificationCenter.default.addObserver(self, selector: #selector(<#T##@objc method#>), name: newName, object: nil)
 }
 
 // 2)
