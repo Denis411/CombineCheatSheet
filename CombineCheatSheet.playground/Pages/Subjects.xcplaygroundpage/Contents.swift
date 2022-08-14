@@ -18,7 +18,7 @@ example(of: "PassthroughSubject") {
     passthroughSubject.send("all emits are cancelled after completion")
 }
 
-example(of: "currentSubject") {
+example(of: "CurrentSubject") {
     let currentSubject = CurrentValueSubject<Int, Never>(0)
     
     currentSubject
@@ -34,4 +34,18 @@ example(of: "currentSubject") {
     print(currentSubject.value)
     
     currentSubject.send(completion: .finished)
+}
+
+example(of: "Type eraser") {
+    let subject = PassthroughSubject<String, Never>()
+    
+//  eraseToAnyPublisher does not allow you to send through it
+    let publisher = subject.eraseToAnyPublisher()
+    
+//    has no member of send
+//    publisher.send("not allowed")
+    
+    publisher
+        .sink(receiveValue: { newValue in print("New value is: \(newValue)")})
+        .store(in: &subscriptions)
 }
