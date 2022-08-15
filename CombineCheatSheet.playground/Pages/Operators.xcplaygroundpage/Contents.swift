@@ -45,3 +45,17 @@ example(of: "\n.replaceNil\n.replaceEmpty\n.replaceError") {
               receiveValue: { print($0) })
         .store(in: &subscription)
 }
+
+example(of: "\n.scan") {
+    var num: Int { .random(in: -10...10) }
+    
+    let august2019 = (0...22)
+        .map { _ in num }
+        .publisher
+    
+    august2019
+//  like reduce
+        .scan(50) { latest, current in max(0, latest + current) }
+        .sink(receiveValue: { print($0) })
+        .store(in: &subscription)
+}
