@@ -59,3 +59,43 @@ example(of: "\n.scan") {
         .sink(receiveValue: { print($0) })
         .store(in: &subscription)
 }
+
+example(of: "More filters") {
+    var nums = (0...10).publisher
+    
+    nums
+        .first(where: { num in num % 2 == 0} )
+        .sink { num in
+            print(".first(where: {} ) gives you: \(num)")
+        }
+        .store(in: &subscription)
+    
+    nums
+        .last(where: { num in num % 2 == 0})
+        .sink { print(".last(where: {} ) gives you: \($0)") }
+        .store(in: &subscription)
+}
+
+example(of: "More filters") {
+    var nums = PassthroughSubject<Int, Never>()
+    
+    nums
+        .first(where: { num in num % 2 == 0} )
+        .sink { num in
+            print(".first(where: {} ) gives you: \(num)")
+        }
+        .store(in: &subscription)
+    
+    nums
+        .last(where: { num in num % 2 == 0})
+        .sink { print(".last(where: {} ) gives you: \($0)") }
+        .store(in: &subscription)
+    
+    nums.send(11)
+    nums.send(22)
+    nums.send(33)
+    nums.send(44)
+    nums.send(55)
+    nums.send(77)
+    nums.send(completion: .finished)
+}
