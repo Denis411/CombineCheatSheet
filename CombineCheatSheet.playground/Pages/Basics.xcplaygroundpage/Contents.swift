@@ -34,7 +34,8 @@ example(of: "NotificationCenter.Publisher") {
 
 // 2)
 example(of: "Just") {
-    let just = Just("Can be any data type")
+//  just emits an output to each subscriber just ones
+    var just = Just("Can be any data type")
     
     just
         .sink(receiveCompletion: { nextElement in print("next element is: \(nextElement)") },
@@ -105,3 +106,45 @@ example(of: "KVO, new way. assign(to: on:)") {
         .assign(to: \.value, on: object)
         .store(in: &subscriptions)
 }
+
+
+extension Notification.Name {
+    static let basicUsage = Notification.Name("Basic Usage")
+}
+
+// 4
+import UIKit
+example(of: "Basic usage") {
+    
+    struct BlogPost {
+        let title: String
+    }
+    
+    let publisher = NotificationCenter.Publisher(center: .default, name: .basicUsage, object: nil)
+        .map { (notification) -> String? in
+            return (notification.object as? BlogPost)?.title
+        }
+    
+//  Use on a custom class
+    class ClassToChange {
+//     changeVar must be optional to work with .subscribe
+         var changableVar: String? = ""
+    }
+    
+    let instanceOfClassToChange = ClassToChange()
+
+    let subscriber = Subscribers.Assign(object: instanceOfClassToChange,
+                                        keyPath: \.changableVar)
+
+    publisher.subscribe(subscriber)
+    
+    
+//  Use on UI elements
+    let label = UILabel()
+    
+    let subscription = Subscribers.Assign(object: label, keyPath: \.text)
+    
+    publisher.subscribe(subscription)
+    
+}
+
