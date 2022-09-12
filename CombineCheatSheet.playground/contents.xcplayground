@@ -5,5 +5,6 @@
         <page name='Basics'/>
         <page name='Operators'/>
         <page name='Subscribers'/>
+        <page name='Practice'/>
     </pages>
 </playground>
